@@ -55,13 +55,15 @@ receiver = threading.Thread(target=receive, args=(connectionSock,))
 sender.start()
 receiver.start()
 
+URPacket = {'reset': 0, 'step': 1}
+
 
 class GameMaster:
     def __init__(self):
         self.state = None
 
     def step(self, a):
-        Send_Buffer.append(str(a).encode('utf-8'))
+        Send_Buffer.append(bytes([URPacket['step']]))
 
         time.sleep(0.5)
 
@@ -72,20 +74,21 @@ class GameMaster:
         self.state = Receive_Buffer.pop(0)
 
         reward = 0
-        done = 0
+        done = False
         info = 0
 
         return state_prime, reward, done, info
 
     def reset(self):
-        Send_Buffer.append('0'.encode('utf-8'))
-        if len(Receive_Buffer) > 0:
-            state = BytesToState(Receive_Buffer[0])
-            self.state = Receive_Buffer.pop(0)
+        Send_Buffer.append(bytes([URPacket['reset']]))
+        while len(Receive_Buffer) <= 0:
+            print('리셋대기')
+            time.sleep(0.1)
+        state = BytesToState(Receive_Buffer[0])
+        self.state = Receive_Buffer.pop(0)
 
-            return state
+        return state
 
-        return None
 
 
 def BytesToState(data):
@@ -93,24 +96,21 @@ def BytesToState(data):
     info = [int(struct.unpack('<f', data)[0]) for data in info]
     return info
 
-env = GameMaster()
 
+env = GameMaster()
 
 for n_epi in range(1000):
     epsilon = max(0.01, 0.08 - 0.01 * (n_epi / 200))  # Linear annealing from 8% to 1%
 
     s = env.reset()
     done = False
-
+    time.sleep(2)
     while not done:
         s_p, r, done, _ = env.step(1)
         s = s_p
         print(s)
         if done:
-            time.sleep(2)
             break
-
 
     if STOP_FLAG:
         break
-
