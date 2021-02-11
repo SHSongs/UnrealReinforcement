@@ -1,15 +1,37 @@
 from socket import *
 import threading
-import time
-import struct
-from model import Qnet
-import numpy as np
-import torch
 
 STOP_FLAG = False
 CNT = 0
-Receive_Buffer = []
-Send_Buffer = []
+
+Receive_Buffer = None
+Send_Buffer = None
+
+
+def networkInit(Send, Receive):
+    global Send_Buffer
+    global Receive_Buffer
+
+    Send_Buffer = Send
+    Receive_Buffer = Receive
+
+    port = 9999
+
+    serverSock = socket(AF_INET, SOCK_STREAM)
+    serverSock.bind(('', port))
+    serverSock.listen(1)
+
+    print('%d번 포트로 접속 대기중...' % port)
+
+    connectionSock, addr = serverSock.accept()
+
+    print(str(addr), '에서 접속되었습니다.')
+
+    sender = threading.Thread(target=send, args=(connectionSock,))
+    receiver = threading.Thread(target=receive, args=(connectionSock,))
+
+    sender.start()
+    receiver.start()
 
 
 def send(sock):
@@ -38,86 +60,3 @@ def receive(sock):
             print('disconeced')
             STOP_FLAG = True
             break
-
-
-port = 9999
-
-serverSock = socket(AF_INET, SOCK_STREAM)
-serverSock.bind(('', port))
-serverSock.listen(1)
-
-print('%d번 포트로 접속 대기중...' % port)
-
-connectionSock, addr = serverSock.accept()
-
-print(str(addr), '에서 접속되었습니다.')
-
-sender = threading.Thread(target=send, args=(connectionSock,))
-receiver = threading.Thread(target=receive, args=(connectionSock,))
-
-sender.start()
-receiver.start()
-
-URPacket = {'reset': 0, 'step': 1}
-
-
-class GameMaster:
-    def __init__(self):
-        self.state = None
-
-    def step(self, a):
-        data = bytes([URPacket['step']])
-        data += bytes([a])
-        Send_Buffer.append(data)
-
-        time.sleep(0.5)
-
-        while len(Receive_Buffer) <= 0:
-            time.sleep(0.1)
-
-        state_prime = BytesToState(Receive_Buffer[0])
-        self.state = Receive_Buffer.pop(0)
-
-        reward = 0
-        done = False
-        info = 0
-        state_prime = np.array(state_prime)
-        return state_prime, reward, done, info
-
-    def reset(self):
-        Send_Buffer.append(bytes([URPacket['reset']]))
-        while len(Receive_Buffer) <= 0:
-            print('리셋대기')
-            time.sleep(0.1)
-        state = BytesToState(Receive_Buffer[0])
-        self.state = Receive_Buffer.pop(0)
-        state = np.array(state)
-        return state
-
-
-
-def BytesToState(data):
-    info = [data[i:i + 4] for i in range(0, len(data), 4)]
-    info = [int(struct.unpack('<L', data)[0]) for data in info]
-    return info
-
-
-env = GameMaster()
-q = Qnet()
-
-for n_epi in range(1000):
-    epsilon = max(0.01, 0.08 - 0.01 * (n_epi / 200))  # Linear annealing from 8% to 1%
-
-    s = env.reset()
-    done = False
-    time.sleep(2)
-    while not done:
-        a = q.sample_action(torch.from_numpy(s).float(), epsilon)
-        s_p, r, done, _ = env.step(a)
-        s = s_p[0:9]
-        # print(s)
-        if done:
-            break
-
-    if STOP_FLAG:
-        break
