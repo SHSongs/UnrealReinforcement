@@ -93,7 +93,7 @@ class GameMaster:
 
 def BytesToState(data):
     info = [data[i:i + 4] for i in range(0, len(data), 4)]
-    info = [int(struct.unpack('<f', data)[0]) for data in info]
+    info = [int(struct.unpack('<L', data)[0]) for data in info]
     return info
 
 
