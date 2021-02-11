@@ -56,20 +56,61 @@ sender.start()
 receiver.start()
 
 
+class GameMaster:
+    def __init__(self):
+        self.state = None
+
+    def step(self, a):
+        Send_Buffer.append(str(a).encode('utf-8'))
+
+        time.sleep(0.5)
+
+        while len(Receive_Buffer) <= 0:
+            time.sleep(0.1)
+
+        state_prime = BytesToState(Receive_Buffer[0])
+        self.state = Receive_Buffer.pop(0)
+
+        reward = 0
+        done = 0
+        info = 0
+
+        return state_prime, reward, done, info
+
+    def reset(self):
+        Send_Buffer.append('0'.encode('utf-8'))
+        if len(Receive_Buffer) > 0:
+            state = BytesToState(Receive_Buffer[0])
+            self.state = Receive_Buffer.pop(0)
+
+            return state
+
+        return None
+
+
 def BytesToState(data):
     info = [data[i:i + 4] for i in range(0, len(data), 4)]
     info = [int(struct.unpack('<f', data)[0]) for data in info]
-    print(info)
+    return info
+
+env = GameMaster()
 
 
-while True:
-    time.sleep(0.5)
-    print(CNT)
+for n_epi in range(1000):
+    epsilon = max(0.01, 0.08 - 0.01 * (n_epi / 200))  # Linear annealing from 8% to 1%
 
-    Send_Buffer.append('1'.encode('utf-8'))
+    s = env.reset()
+    done = False
 
-    if len(Receive_Buffer) > 0:
-        BytesToState(Receive_Buffer[0])
-        Receive_Buffer.pop(0)
+    while not done:
+        s_p, r, done, _ = env.step(1)
+        s = s_p
+        print(s)
+        if done:
+            time.sleep(2)
+            break
+
+
     if STOP_FLAG:
         break
+
