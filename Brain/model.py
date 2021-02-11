@@ -1,5 +1,4 @@
 import random
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -8,7 +7,7 @@ class Qnet(nn.Module):
         super(Qnet, self).__init__()
         self.fc1 = nn.Linear(9, 128)
         self.fc2 = nn.Linear(128, 128)
-        self.fc3 = nn.Linear(128, 2)
+        self.fc3 = nn.Linear(128, 3)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -20,6 +19,6 @@ class Qnet(nn.Module):
         out = self.forward(obs)
         coin = random.random()
         if coin < epsilon:
-            return random.randint(0, 1)
+            return random.randint(0, 2)
         else:
             return out.argmax().item()
