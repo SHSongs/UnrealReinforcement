@@ -26,6 +26,7 @@ class GameMaster:
         info = 0
         state_prime = np.array(packet[0:9])
         reward = packet[9]
+        print(packet)
         done = False if packet[10] == 0 else True
 
         mean = 500
@@ -46,6 +47,6 @@ class GameMaster:
 
 def BytesToPacket(data):
     info = [data[i:i + 4] for i in range(0, len(data), 4)]
-    info = [int(struct.unpack('<L', data)[0]) for data in info]
+    info = [int(struct.unpack('<i', data)[0]) for data in info]
     return info
 

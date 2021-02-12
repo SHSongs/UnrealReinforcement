@@ -21,7 +21,7 @@ q = Qnet()
 q_target = Qnet()
 q_target.load_state_dict(q.state_dict())
 
-memory = ReplayBuffer()
+memory = ReplayBuffer(buffer_limit=1000)
 
 print_interval = 20
 score = 0.0
@@ -52,7 +52,7 @@ for n_epi in range(1000):
     time.sleep(2)
     while not done:
         a = q.sample_action(torch.from_numpy(s).float(), epsilon)
-        s_p, r, done, _ = env.step(1)
+        s_p, r, done, _ = env.step(a)
         done_mask = 0.0 if done else 1.0
         r = -10.0 if done else r
         memory.put([s, a, r, s_p, done_mask])
@@ -63,7 +63,7 @@ for n_epi in range(1000):
             print(n_epi)
             break
 
-    if memory.size() > 300:
+    if memory.size() > 200:
         train(q, q_target, memory, optimizer)
     if n_epi % 20 == 0:
         q_target.load_state_dict(q.state_dict())
