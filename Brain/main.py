@@ -52,9 +52,9 @@ for n_epi in range(1000):
     time.sleep(2)
     while not done:
         a = q.sample_action(torch.from_numpy(s).float(), epsilon)
-        s_p, r, done, _ = env.step(a)
+        s_p, r, done, _ = env.step(1)
         done_mask = 0.0 if done else 1.0
-        r = -1000.0 if done else r / 10
+        r = -10.0 if done else r
         memory.put([s, a, r, s_p, done_mask])
         s = s_p
 
