@@ -15,7 +15,7 @@ class GameMaster:
         data += bytes([a])
         self.Send_Buffer.append(data)
 
-        time.sleep(0.3)
+        time.sleep(0.1)
 
         while len(self.Receive_Buffer) <= 0:
             time.sleep(0.1)
@@ -26,7 +26,6 @@ class GameMaster:
         info = 0
         state_prime = np.array(packet[0:9])
         reward = packet[9]
-        print(packet)
         done = False if packet[10] == 0 else True
 
         mean = 500
