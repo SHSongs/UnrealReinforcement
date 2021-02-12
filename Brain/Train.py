@@ -17,7 +17,7 @@ Send_Buffer = []
 networkInit(Send_Buffer, Receive_Buffer)
 env = GameMaster(Send_Buffer, Receive_Buffer)
 q = Qnet()
-q.load_state_dict(torch.load('./params2/q_net200.pth'))
+# q.load_state_dict(torch.load('./params3/q_net200.pth'))
 
 q_target = Qnet()
 q_target.load_state_dict(q.state_dict())
@@ -69,9 +69,10 @@ for n_epi in range(1000):
         q_target.load_state_dict(q.state_dict())
         print("n_episode :{}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(
             n_epi, score / print_interval, memory.size(), epsilon * 100))
+        score = 0.0
 
     if n_epi % 50 == 0:
-        PATH = './params2/q_net' + str(n_epi) + '.pth'
+        PATH = './params3/q_net' + str(n_epi) + '.pth'
         torch.save(q.state_dict(), PATH)
 
 PATH = './q_net.pth'
