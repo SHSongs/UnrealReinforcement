@@ -18,7 +18,13 @@ Send_Buffer = []
 networkInit(Send_Buffer, Receive_Buffer)
 env = GameMaster(Send_Buffer, Receive_Buffer)
 q = Qnet()
+q_target = Qnet()
+q_target.load_state_dict(q.state_dict())
+
 memory = ReplayBuffer()
+
+print_interval = 20
+score = 0.0
 
 optimizer = optim.Adam(q.parameters(), lr=learning_rate)
 
@@ -48,11 +54,19 @@ for n_epi in range(1000):
         a = q.sample_action(torch.from_numpy(s).float(), epsilon)
         s_p, r, done, _ = env.step(a)
         done_mask = 0.0 if done else 1.0
-        r = -1000.0 if done else r
+        r = -1000.0 if done else r / 10
         memory.put([s, a, r, s_p, done_mask])
-        print(r)
         s = s_p
-        print(s)
+
+        score += r
         if done:
-            print('done')
+            print(n_epi)
             break
+
+    if memory.size() > 300:
+        train(q, q_target, memory, optimizer)
+    if n_epi % 20 == 0:
+        q_target.load_state_dict(q.state_dict())
+        print("n_episode :{}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(
+            n_epi, score / print_interval, memory.size(), epsilon * 100))
+

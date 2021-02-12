@@ -28,12 +28,15 @@ class GameMaster:
         reward = packet[9]
         done = False if packet[10] == 0 else True
 
+        mean = 500
+        std = 1000
+        state_prime = (state_prime - mean) / std
+
         return state_prime, reward, done, info
 
     def reset(self):
         self.Send_Buffer.append(bytes([URPacket['reset']]))
         while len(self.Receive_Buffer) <= 0:
-            print('리셋대기')
             time.sleep(0.1)
         state = BytesToPacket(self.Receive_Buffer[0])
         self.Receive_Buffer.pop(0)
@@ -45,3 +48,4 @@ def BytesToPacket(data):
     info = [data[i:i + 4] for i in range(0, len(data), 4)]
     info = [int(struct.unpack('<L', data)[0]) for data in info]
     return info
+
