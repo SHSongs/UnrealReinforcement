@@ -50,6 +50,7 @@ for n_epi in range(1000):
         done_mask = 0.0 if done else 1.0
         r = -1000.0 if done else r
         memory.put([s, a, r, s_p, done_mask])
+        print(r)
         s = s_p
         print(s)
         if done:
