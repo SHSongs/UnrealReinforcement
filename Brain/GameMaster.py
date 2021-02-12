@@ -15,7 +15,7 @@ class GameMaster:
         data += bytes([a])
         self.Send_Buffer.append(data)
 
-        time.sleep(0.5)
+        time.sleep(0.3)
 
         while len(self.Receive_Buffer) <= 0:
             time.sleep(0.1)
