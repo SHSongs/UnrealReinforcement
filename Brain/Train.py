@@ -17,7 +17,7 @@ Send_Buffer = []
 networkInit(Send_Buffer, Receive_Buffer)
 env = GameMaster(Send_Buffer, Receive_Buffer)
 q = Qnet()
-# q.load_state_dict(torch.load('./params3/q_net200.pth'))
+q.load_state_dict(torch.load('./params3/q_net50.pth'))
 
 q_target = Qnet()
 q_target.load_state_dict(q.state_dict())

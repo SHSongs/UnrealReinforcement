@@ -3,6 +3,16 @@
 	"EngineAssociation": "4.25",
 	"Category": "",
 	"Description": "",
+	"Modules": [
+		{
+			"Name": "URGame",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"TcpSocketPlugin"
+			]
+		}
+	],
 	"Plugins": [
 		{
 			"Name": "PhysXVehicles",
