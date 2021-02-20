@@ -9,7 +9,8 @@ void AURSocket::BeginPlay()
 	ConnectToGameServer();
 }
 
-void AURSocket::ConnectToGameServer() {
+void AURSocket::ConnectToGameServer()
+{
 	if (isConnected(connectionIdGameServer))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Log: Can't connect SECOND time. We're already connected!"));
@@ -24,25 +25,30 @@ void AURSocket::ConnectToGameServer() {
 	Connect("127.0.0.1", 9999, disconnectDelegate, connectDelegate, receivedDelegate, connectionIdGameServer);
 }
 
+void AURSocket::SendState(const TArray<uint8> data)
+{
+	SendData(connectionIdGameServer, data);
+}
 
-void AURSocket::OnConnected(int32 ConId) {
+
+void AURSocket::OnConnected(int32 ConId)
+{
 	UE_LOG(LogTemp, Warning, TEXT("Log: Connected to server."));
 }
 
-void AURSocket::OnDisconnected(int32 ConId) {
+void AURSocket::OnDisconnected(int32 ConId)
+{
 	UE_LOG(LogTemp, Warning, TEXT("Log: OnDisconnected."));
 }
 
-void AURSocket::OnMessageReceived(int32 ConId, TArray<uint8>& Message) {
+void AURSocket::OnMessageReceived(int32 ConId, TArray<uint8>& Message)
+{
 	UE_LOG(LogTemp, Log, TEXT("Log: Received message."));
 
-	if (Message.Num() != 0) {
-		TArray<uint8> yourMessage;
-		if (!Message_ReadBytes(Message.Num(), Message, yourMessage)) {
-		}
-		TArray<uint8> Arr;
-		Arr.Init(10, 5);
-		ReceiveDelegate.Broadcast(1, Arr);
-		
+	if (Message.Num() != 0)
+	{
+		const URPacket upk = static_cast<URPacket>(Message[0]);
+		Message.RemoveAt(0);
+		ReceiveDelegate.Broadcast(upk, Message);
 	}
 }
