@@ -40,7 +40,7 @@ class ATP_VehiclePawn : public AWheeledVehicle
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* InCarGear;
 
-	
+
 public:
 	ATP_VehiclePawn();
 
@@ -54,11 +54,11 @@ public:
 
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly)
 	/** The color of the incar gear text in forward gears */
-	FColor	GearDisplayColor;
+	FColor GearDisplayColor;
 
 	/** The color of the incar gear text when in reverse */
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly)
-	FColor	GearDisplayReverseColor;
+	FColor GearDisplayReverseColor;
 
 	/** Are we using incar camera */
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly)
@@ -110,7 +110,7 @@ private:
 	 * @param	bState true will enable in car view and set visibility of various if its doesnt match new state
 	 * @param	bForce true will force to always change state
 	 */
-	void EnableIncarView( const bool bState, const bool bForce = false );
+	void EnableIncarView(const bool bState, const bool bForce = false);
 
 	/** Update the gear and speed strings */
 	void UpdateHUDStrings();
@@ -137,7 +137,10 @@ public:
 	float RightAxis;
 	UPROPERTY(BlueprintReadWrite)
 	float ForwardAxis;
-	
+
 	void StreeringMove();
-	
+
+	UFUNCTION(BlueprintCallable)
+	TArray<int32> LineTrace();
+
 };

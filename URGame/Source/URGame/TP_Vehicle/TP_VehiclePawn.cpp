@@ -31,6 +31,8 @@ const FName ATP_VehiclePawn::LookRightBinding("LookRight");
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
+#include "DrawDebugHelpers.h"
+
 ATP_VehiclePawn::ATP_VehiclePawn()
 {
 	// Car mesh
@@ -289,6 +291,40 @@ void ATP_VehiclePawn::SetupInCarHUD()
 void ATP_VehiclePawn::StreeringMove()
 {
 	GetVehicleMovement()->SetSteeringInput(RightAxis);
+}
+
+TArray<int32> ATP_VehiclePawn::LineTrace()
+{
+	TArray<int32> Distances;
+	for (int i = -4; i < 5; i++)
+	{
+		FHitResult out;
+		FVector ALoc = GetMesh()->GetComponentLocation();
+		FRotator ARot = GetMesh()->GetComponentRotation();
+		
+		FVector Start = ALoc + ARot.RotateVector(FVector(260.f, 0, 60.f));
+		FVector End = Start + ARot.RotateVector(FVector(1500.f, i * 250.f, 60.f));
+		
+		FCollisionQueryParams Params;
+		const bool bResult = GetWorld()->LineTraceSingleByChannel(out, Start, End, ECC_Visibility, Params);
+		
+		float dis = (out.Location - Start).Size();
+		Distances.Add(static_cast<int32>(dis));
+
+#if ENABLE_DRAW_DEBUG
+		
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		
+		DrawDebugLine(GetWorld(),
+            Start,
+            End,
+            DrawColor,
+            false,
+            0.1f);
+#endif
+
+	}
+	return Distances;
 }
 
 #undef LOCTEXT_NAMESPACE
