@@ -143,4 +143,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<int32> LineTrace();
 
+	UFUNCTION(BlueprintCallable)
+	TArray<uint8> Conv_IntArrToBytes(const TArray<int32> IntArr);
 };

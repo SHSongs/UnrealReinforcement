@@ -31,6 +31,7 @@ const FName ATP_VehiclePawn::LookRightBinding("LookRight");
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
+#include "TcpSocketConnection.h"
 #include "DrawDebugHelpers.h"
 
 ATP_VehiclePawn::ATP_VehiclePawn()
@@ -327,4 +328,17 @@ TArray<int32> ATP_VehiclePawn::LineTrace()
 	return Distances;
 }
 
+TArray<uint8> ATP_VehiclePawn::Conv_IntArrToBytes(const TArray<int32> IntArr)
+{
+	TArray<uint8> Data;
+	for (int32 i : IntArr)
+	{
+		Data.Append(ATcpSocketConnection::Conv_IntToBytes(i));
+	}
+	return Data;
+}
+
 #undef LOCTEXT_NAMESPACE
+
+
+
