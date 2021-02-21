@@ -6,6 +6,9 @@
 
 ATP_VehicleGameMode::ATP_VehicleGameMode()
 {
-	DefaultPawnClass = ATP_VehiclePawn::StaticClass();
+	static ConstructorHelpers::FClassFinder<APawn> PawnClass(TEXT("/Game/VehicleBP/Sedan/Sedan"));
+	if (PawnClass.Succeeded())
+		DefaultPawnClass = PawnClass.Class;
+
 	HUDClass = ATP_VehicleHud::StaticClass();
 }

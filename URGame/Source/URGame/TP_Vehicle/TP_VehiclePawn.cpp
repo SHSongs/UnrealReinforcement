@@ -230,7 +230,7 @@ void ATP_VehiclePawn::BeginPlay()
 #if HMD_MODULE_INCLUDED
 	bEnableInCar = UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled();
 #endif // HMD_MODULE_INCLUDED
-	EnableIncarView(bEnableInCar,true);
+	// EnableIncarView(bEnableInCar,true);
 }
 
 void ATP_VehiclePawn::OnResetVR()
@@ -264,6 +264,7 @@ void ATP_VehiclePawn::UpdateHUDStrings()
 	}	
 }
 
+
 void ATP_VehiclePawn::SetupInCarHUD()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
@@ -282,6 +283,12 @@ void ATP_VehiclePawn::SetupInCarHUD()
 			InCarGear->SetTextRenderColor(GearDisplayReverseColor);
 		}
 	}
+}
+
+
+void ATP_VehiclePawn::StreeringMove()
+{
+	GetVehicleMovement()->SetSteeringInput(RightAxis);
 }
 
 #undef LOCTEXT_NAMESPACE

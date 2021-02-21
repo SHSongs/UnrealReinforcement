@@ -130,4 +130,14 @@ public:
 	FORCEINLINE UTextRenderComponent* GetInCarSpeed() const { return InCarSpeed; }
 	/** Returns InCarGear subobject **/
 	FORCEINLINE UTextRenderComponent* GetInCarGear() const { return InCarGear; }
+
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+	float RightAxis;
+	UPROPERTY(BlueprintReadWrite)
+	float ForwardAxis;
+	
+	void StreeringMove();
+	
 };
