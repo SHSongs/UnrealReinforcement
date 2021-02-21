@@ -16,16 +16,6 @@
 #include "Materials/Material.h"
 #include "GameFramework/Controller.h"
 
-#ifndef HMD_MODULE_INCLUDED
-#define HMD_MODULE_INCLUDED 0
-#endif
-
-// Needed for VR Headset
-#if HMD_MODULE_INCLUDED
-#include "IXRTrackingSystem.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
-#endif // HMD_MODULE_INCLUDED
-
 const FName ATP_VehiclePawn::LookUpBinding("LookUp");
 const FName ATP_VehiclePawn::LookRightBinding("LookRight");
 
@@ -141,7 +131,6 @@ void ATP_VehiclePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 	PlayerInputComponent->BindAction("Handbrake", IE_Released, this, &ATP_VehiclePawn::OnHandbrakeReleased);
 	PlayerInputComponent->BindAction("SwitchCamera", IE_Pressed, this, &ATP_VehiclePawn::OnToggleCamera);
 
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATP_VehiclePawn::OnResetVR); 
 }
 
 void ATP_VehiclePawn::MoveForward(float Val)
@@ -177,7 +166,6 @@ void ATP_VehiclePawn::EnableIncarView(const bool bState, const bool bForce)
 		
 		if (bState == true)
 		{
-			OnResetVR();
 			Camera->Deactivate();
 			InternalCamera->Activate();
 		}
@@ -206,13 +194,8 @@ void ATP_VehiclePawn::Tick(float Delta)
 	// Set the string in the incar hud
 	SetupInCarHUD();
 
-	bool bHMDActive = false;
-#if HMD_MODULE_INCLUDED
-	if ((GEngine->XRSystem.IsValid() == true) && ((GEngine->XRSystem->IsHeadTrackingAllowed() == true) || (GEngine->IsStereoscopic3D() == true)))
-	{
-		bHMDActive = true;
-	}
-#endif // HMD_MODULE_INCLUDED
+	const bool bHMDActive = false;
+	
 	if (bHMDActive == false)
 	{
 		if ( (InputComponent) && (bInCarCameraActive == true ))
@@ -223,30 +206,17 @@ void ATP_VehiclePawn::Tick(float Delta)
 			InternalCamera->SetRelativeRotation(HeadRotation);
 		}
 	}
+
+	StreeringMove();
+	GetVehicleMovement()->SetThrottleInput(ForwardAxis);
 }
 
 void ATP_VehiclePawn::BeginPlay()
 {
 	Super::BeginPlay();
 
-	bool bEnableInCar = false;
-#if HMD_MODULE_INCLUDED
-	bEnableInCar = UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled();
-#endif // HMD_MODULE_INCLUDED
-	// EnableIncarView(bEnableInCar,true);
 }
 
-void ATP_VehiclePawn::OnResetVR()
-{
-#if HMD_MODULE_INCLUDED
-	if (GEngine->XRSystem.IsValid())
-	{
-		GEngine->XRSystem->ResetOrientationAndPosition();
-		InternalCamera->SetRelativeLocation(InternalCameraOrigin);
-		GetController()->SetControlRotation(FRotator());
-	}
-#endif // HMD_MODULE_INCLUDED
-}
 
 void ATP_VehiclePawn::UpdateHUDStrings()
 {

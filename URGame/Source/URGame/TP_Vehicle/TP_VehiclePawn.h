@@ -97,8 +97,6 @@ public:
 	void OnHandbrakeReleased();
 	/** Switch between cameras */
 	void OnToggleCamera();
-	/** Handle reset VR device */
-	void OnResetVR();
 
 	static const FName LookUpBinding;
 	static const FName LookRightBinding;
