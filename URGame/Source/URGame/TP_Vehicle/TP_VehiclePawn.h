@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "URSocket.h"
 #include "WheeledVehicle.h"
 #include "TP_VehiclePawn.generated.h"
 
@@ -136,6 +138,13 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	float ForwardAxis;
 
+	UPROPERTY(BlueprintReadWrite)
+	class AURSocket* URSocket;
+	
+	UPROPERTY(BlueprintReadWrite)
+	class AActor* StartPoint;
+
+	
 	void StreeringMove();
 
 	UFUNCTION(BlueprintCallable)
@@ -143,4 +152,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<uint8> Conv_IntArrToBytes(const TArray<int32> IntArr);
+
+	UFUNCTION()
+	void Agent(URPacket UrPacket, const TArray<uint8>& Byte_command);
 };

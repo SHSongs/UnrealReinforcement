@@ -4,6 +4,7 @@
 #include "TP_VehicleWheelFront.h"
 #include "TP_VehicleWheelRear.h"
 #include "TP_VehicleHud.h"
+#include "URSocket.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -15,6 +16,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Materials/Material.h"
 #include "GameFramework/Controller.h"
+#include "Kismet/GameplayStatics.h"
 
 const FName ATP_VehiclePawn::LookUpBinding("LookUp");
 const FName ATP_VehiclePawn::LookRightBinding("LookRight");
@@ -113,6 +115,10 @@ ATP_VehiclePawn::ATP_VehiclePawn()
 	GearDisplayColor = FColor(255, 255, 255, 255);
 
 	bInReverseGear = false;
+
+
+
+	
 }
 
 void ATP_VehiclePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -214,7 +220,27 @@ void ATP_VehiclePawn::Tick(float Delta)
 void ATP_VehiclePawn::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	TArray<AActor*> FoundActors;
 
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("socket")),FoundActors);
+	if (FoundActors.Num() > 0)
+	{
+		URSocket = Cast<AURSocket>(FoundActors[0]);
+		URSocket->ReceiveDelegate.AddDynamic(this, &ATP_VehiclePawn::Agent);
+	}
+	else
+		UE_LOG(LogTemp, Error, TEXT("Not Found URSocket"));
+	
+	FoundActors.Empty();
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("StartPoint")),FoundActors);
+	if (FoundActors.Num() > 0)
+	{
+		StartPoint = FoundActors[0];
+	}
+	else
+		UE_LOG(LogTemp, Error, TEXT("Not Found StartPoint"));
+	
 }
 
 
@@ -306,6 +332,20 @@ TArray<uint8> ATP_VehiclePawn::Conv_IntArrToBytes(const TArray<int32> IntArr)
 		Data.Append(ATcpSocketConnection::Conv_IntToBytes(i));
 	}
 	return Data;
+}
+
+void ATP_VehiclePawn::Agent(URPacket UrPacket, const TArray<uint8>& Byte_command)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%f"), StartPoint->GetActorLocation().X);
+	switch (UrPacket)
+	{
+	case URPacket::Reset:
+
+		break;
+	case URPacket::Step:
+		break;
+	default: ;
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
