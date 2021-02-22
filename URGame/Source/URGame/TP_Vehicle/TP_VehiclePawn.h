@@ -140,11 +140,21 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	class AURSocket* URSocket;
-	
+
 	UPROPERTY(BlueprintReadWrite)
 	class AActor* StartPoint;
 
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 Reward;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 Done;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<uint8> DoneState;
+
+
 	void StreeringMove();
 
 	UFUNCTION(BlueprintCallable)
