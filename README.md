@@ -6,6 +6,10 @@
 ![Reward1](img/reward1.png)  
 ![Reward2](img/reward2.png)  
 
+## Version
+### [C++(Recommend)](https://github.com/SHSongs/UnrealReinforcement/tree/cpp)  
+### [Blueprint](https://github.com/SHSongs/UnrealReinforcement/tree/blueprint)
+
 ## Dependencies
 Python3
 ```
