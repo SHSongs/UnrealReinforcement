@@ -24,12 +24,12 @@ env = GameMaster(Send_Buffer, Receive_Buffer)
 q = Qnet()
 q.to(device)
 
-# q.load_state_dict(torch.load('./params2/q_net200.pth'))
+q.load_state_dict(torch.load('./params7/q_net500.pth'))
 
 q_target = Qnet()
 q_target.load_state_dict(q.state_dict())
 
-memory = ReplayBuffer(buffer_limit=10000)
+memory = ReplayBuffer(buffer_limit=5000)
 
 print_interval = 5
 score = 0.0
@@ -79,7 +79,7 @@ for n_epi in range(1000):
             rewards.append(reward)
             break
 
-    if memory.size() > 40:
+    if memory.size() > 200:
         train(q, q_target, memory, optimizer)
     if n_epi % print_interval == 0:
         q_target.load_state_dict(q.state_dict())
@@ -90,9 +90,9 @@ for n_epi in range(1000):
         plt.show()
 
     if n_epi % 50 == 0:
-        PATH = './params6/q_net' + str(n_epi) + '.pth'
+        PATH = './params7/q_net' + str(n_epi) + '.pth'
         torch.save(q.state_dict(), PATH)
 
 
-PATH = './q_net6.pth'
+PATH = './q_net7.pth'
 torch.save(q.state_dict(), PATH)
