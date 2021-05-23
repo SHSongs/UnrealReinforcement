@@ -79,7 +79,7 @@ for n_epi in range(1000):
             rewards.append(reward)
             break
 
-    if memory.size() > 200:
+    if memory.size() > 40:
         train(q, q_target, memory, optimizer)
     if n_epi % print_interval == 0:
         q_target.load_state_dict(q.state_dict())
