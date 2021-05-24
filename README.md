@@ -30,6 +30,7 @@ This repository is tested ...
 ## [Demo youtube](https://www.youtube.com/watch?v=9NzTpVfRoCg)
 ![Demo](img/Demo.gif)  
 ## Reward
+stack state = 1  
 <img src="img/epsoid1000.png" height="400">  
 
 stack state = 4  
