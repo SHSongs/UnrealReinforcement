@@ -2,7 +2,12 @@
 
 # Unreal Reinforcement
 
-This is a DQN Algorithm with Unreal Engine, Python.  
+This is a DQN Algorithm using Python.  
+and game that is a completely out of control using Unreal Engine.  
+
+Two independent processes connect to socket communication.  
+Train neural network and playing game asynchronously.  
+
 
 Please feel free to open an issue or a pull-request if you have any idea to make it better. :)
 
