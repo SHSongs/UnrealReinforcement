@@ -30,7 +30,11 @@ This repository is tested ...
 ## [Demo youtube](https://www.youtube.com/watch?v=9NzTpVfRoCg)
 ![Demo](img/Demo.gif)  
 ## Reward
-![Reward1](img/reward1.png)  
+stack state = 1  
+<img src="img/epsoid1000.png" height="400">  
+
+stack state = 4  
+<img src="img/epsoid500-stackstate-4.png" height="400">  
 
 ## Version
 ### [C++(Recommend)](https://github.com/SHSongs/UnrealReinforcement/tree/cpp)  
