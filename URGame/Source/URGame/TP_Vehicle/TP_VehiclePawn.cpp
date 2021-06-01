@@ -356,13 +356,13 @@ void ATP_VehiclePawn::Agent(URPacket UrPacket, const TArray<uint8>& Byte_command
 		Action = static_cast<int32>(Byte_command[0]);
 		switch (Action)
 		{
-		case 1:
+		case 0:
 			RightAxis = 0.f;
 			break;
-		case 2:
+		case 1:
 			RightAxis = 0.5f;
 			break;
-		case 3:
+		case 2:
 			RightAxis = -0.5f;
 			break;
 		default:
