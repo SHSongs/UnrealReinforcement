@@ -1,5 +1,7 @@
 *Do you want a RL agent moving on Unreal Engine?*
 
+[paper](https://github.com/SHSongs/UnrealReinforcement/wiki). 
+
 # Unreal Reinforcement
 
 This is a DQN Algorithm using Python.  
